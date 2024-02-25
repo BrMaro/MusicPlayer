@@ -98,6 +98,7 @@ const playSong = (id) => {
     playButton.classList.add('playing');
     highlightCurrentSong();
     setPlayerDisplay();
+    setPlayButtonAccessibleText();
     audio.play();
 
 };
@@ -130,6 +131,18 @@ const playPreviousSong = () => {
     const previousSong = userData?.songs[currentSongIndex-1];
     playSong(previousSong.id);
     }
+
+};
+
+
+const shuffle = () => {
+    userData?.songs.sort(() => Math.random() - 0.5);
+    userData.currentSong = null;
+    userData.songCurrentTime = 0;
+    renderSongs(userData?.songs);
+    pauseSong();
+    setPlayerDisplay();
+    setPlayButtonAccessibleText();
 
 };
 
@@ -187,7 +200,10 @@ playButton.addEventListener('click',() => {
 };)
 
 
-
+const setPlayButtonAccessibleText = () => {
+    const song = userData?.currentSong || userData?.songs[0];
+    playButton.setAttribute("aria-label",song?.title ? `Play ${song.title}` : "Play");
+};
 
 
 const getCurrentSongIndex = () => {
@@ -197,6 +213,7 @@ const getCurrentSongIndex = () => {
 pauseButton.addEventListener('click',pauseSong);
 nextButton.addEventListener('click',playNextSong);
 previousButton.addEventListener('click',playPreviousSong);
+shuffleButton.addEventListener('click',shuffle);
 
 
 userData?.songs.sort((a,b) => {
